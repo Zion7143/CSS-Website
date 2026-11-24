@@ -1,0 +1,2292 @@
+/* =====================================================================
+   DESIGN SOURCE — the look of the whole website.
+
+   HTML pages only contain structure and meaningful class names
+   (site-header__logo, event-card__title …).  This file says what each class looks like.
+   Each rule uses Tailwind's @apply, so the values are Tailwind utilities.
+
+   Edit this file, then rebuild css/style.css:      npm run css
+
+   Sections:  1. base & accessibility   2. components   3. states set by JavaScript   4. high contrast
+   ===================================================================== */
+@import "tailwindcss" source(none);
+
+/* ---------------------------------------------------------------------
+   1. BASE & ACCESSIBILITY (plain CSS)
+   --------------------------------------------------------------------- */
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ---- Site-wide custom styles (accessibility, focus rings, hero, skip link) ---- */
+* {
+  font-family:
+    Plus Jakarta Sans,
+    sans-serif;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  font-size: 100%;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: 0 0;
+}
+::-webkit-scrollbar-thumb {
+  background: #0d4a2e44;
+  border-radius: 3px;
+}
+:focus-visible {
+  outline-offset: 2px;
+  border-radius: 6px;
+  outline: 3px solid #14a85c;
+}
+nav :focus-visible,
+footer :focus-visible,
+[data-on-dark]:focus-visible {
+  outline-offset: -3px;
+  outline-color: #fff;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-offset: 1px;
+}
+#main-content:focus {
+  outline: none;
+}
+.skip-link {
+  z-index: 100;
+  color: #fff;
+  background: #0a5c34;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.15s;
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  outline-offset: 2px;
+  outline: 3px solid #fff;
+  transform: translateY(0);
+  box-shadow: 0 0 0 5px #0a5c34;
+}
+nav [data-nav-sub]:focus-visible {
+  outline-offset: -3px;
+  color: #0a5c34;
+  background-color: #d3f3e1;
+  border-radius: 0;
+  outline: 3px solid #0a5c34;
+}
+html[data-text="large"] {
+  font-size: 118.75%;
+}
+@media (width>=768px) {
+  html[data-text="large"] {
+    font-size: 125%;
+  }
+}
+html.reduce-motion {
+  scroll-behavior: auto;
+}
+html.reduce-motion *,
+html.reduce-motion :before,
+html.reduce-motion :after {
+  transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+}
+.hero-section {
+  min-height: 16rem;
+}
+@media (width>=640px) {
+  .hero-section {
+    min-height: 380px;
+  }
+  html[data-text="large"] .hero-section {
+    min-height: 460px;
+  }
+}
+html[data-text="large"] .hero-section h1 {
+  line-height: 1.12;
+}
+
+/* Used by the dropdown menus (animate-[fadeIn_0.15s_ease]) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Component and state rules live in a layer, so the base/accessibility rules above (focus rings, high contrast) keep priority over them. */
+@layer components {
+/* ---------------------------------------------------------------------
+   2. COMPONENTS — one rule per class used in the HTML / JavaScript
+   --------------------------------------------------------------------- */
+
+
+/* ===== page ===== */
+
+.page {
+  @apply min-h-screen bg-white text-gray-800;
+}
+
+
+/* ===== site-header ===== */
+
+.site-header {
+  @apply bg-white border-t border-black/30 border-b border-b-gray-100 sticky top-0 z-40
+         shadow-sm;
+}
+
+.site-header__inner {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between min-h-16 py-2 gap-x-4
+         gap-y-2 flex-wrap;
+}
+
+.site-header__brand {
+  @apply flex items-center gap-3 shrink-0;
+}
+
+.site-header__logo {
+  @apply w-12 h-12 object-contain;
+}
+
+.site-header__name {
+  @apply font-bold text-gray-900 text-sm leading-tight;
+}
+
+.site-header__college {
+  @apply text-[#0b7a43] text-xs font-semibold;
+}
+
+.site-header__tools {
+  @apply hidden md:flex flex-wrap items-center justify-end gap-3 flex-1 min-w-0;
+}
+
+
+/* ===== site-search ===== */
+
+.site-search {
+  @apply relative flex-1 min-w-[18rem] max-w-md;
+}
+
+.site-search__input {
+  @apply pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-full bg-gray-50
+         focus:outline-none focus:ring-2 focus:ring-[#0d4a2e]/30 focus:border-[#0d4a2e]/40
+         w-full transition-[padding] duration-200;
+}
+
+.site-search__icon {
+  @apply w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none
+         transition-opacity duration-200;
+}
+
+
+/* ===== settings-button ===== */
+
+.settings-button {
+  @apply shrink-0 flex items-center bg-white border border-gray-300 text-gray-800 text-sm
+         font-semibold h-10 px-3 rounded-full hover:bg-[#d3f3e1] hover:border-[#0b7a43]
+         active:scale-95 transition;
+}
+
+.settings-button__label {
+  @apply max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200;
+  .settings-button:hover & {
+    @apply max-w-24 opacity-100 ml-2;
+  }
+  .settings-button:focus-visible & {
+    @apply max-w-24 opacity-100 ml-2;
+  }
+  .settings-button:active & {
+    @apply max-w-24 opacity-100 ml-2;
+  }
+}
+
+
+/* ===== icon-5-fixed ===== */
+
+.icon-5-fixed {
+  @apply w-5 h-5 shrink-0;
+}
+
+
+/* ===== menu-toggle ===== */
+
+.menu-toggle {
+  @apply md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors;
+}
+
+
+/* ===== icon-5 ===== */
+
+.icon-5 {
+  @apply w-5 h-5;
+}
+
+
+/* ===== site-nav ===== */
+
+.site-nav {
+  @apply max-md:sticky max-md:top-[var(--hdr,4.2rem)] bg-gradient-to-r from-[#0a5c34]
+         via-[#0f7a45] to-[#14a85c] text-white relative z-30 border-b border-black/30;
+}
+
+.site-nav__inner {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 max-md:max-h-[calc(100dvh-var(--hdr,4.2rem))]
+         max-md:overflow-y-auto;
+}
+
+.site-nav__list {
+  @apply flex-col md:flex-row md:flex-wrap md:flex md:items-center hidden md:flex;
+}
+
+.site-nav__search-item {
+  @apply md:hidden px-3 py-3 border-b border-white/15;
+}
+
+.site-nav__search-row {
+  @apply flex items-center gap-2;
+}
+
+.site-nav__item {
+  @apply relative;
+}
+
+.site-nav__link {
+  @apply flex items-center px-4 py-3 text-sm font-medium transition-colors hover:bg-black/15
+         whitespace-nowrap;
+}
+
+.site-nav__button {
+  @apply flex items-center gap-1 w-full text-left px-4 py-3 text-sm font-medium
+         whitespace-nowrap transition-colors hover:bg-black/15;
+}
+
+.site-nav__chevron {
+  @apply w-3.5 h-3.5 opacity-70 transition-transform;
+}
+
+.site-nav__dropdown {
+  @apply absolute top-full left-0 mt-0 bg-white border border-gray-100 rounded-b-lg shadow-lg
+         min-w-44 z-50 py-1 animate-[fadeIn_0.15s_ease];
+}
+
+.site-nav__dropdown-link {
+  @apply block w-full text-left px-4 py-2.5 text-sm font-medium text-gray-900
+         hover:bg-[#d3f3e1] hover:text-[#083d24] transition-colors;
+}
+
+
+/* ===== site-search-mobile ===== */
+
+.site-search-mobile {
+  @apply relative flex-1 min-w-0;
+}
+
+
+/* ===== home-hero ===== */
+
+.home-hero {
+  @apply relative overflow-hidden flex;
+}
+
+.home-hero__image {
+  @apply absolute inset-0 w-full h-full object-cover object-center;
+}
+
+.home-hero__overlay {
+  @apply absolute inset-0 bg-gradient-to-r from-[#0a5c34] via-[#0a5c34ee] to-[#0a5c34aa]
+         sm:to-transparent;
+}
+
+.home-hero__top-shade {
+  @apply absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/40 to-transparent;
+}
+
+.home-hero__body {
+  @apply relative flex items-center w-full;
+}
+
+.home-hero__inner {
+  @apply max-w-7xl mx-auto w-full px-4 sm:px-6 grid grid-cols-1
+         sm:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-8 items-center;
+}
+
+.home-hero__copy {
+  @apply flex flex-col justify-center py-10 sm:py-14 max-w-2xl;
+}
+
+.home-hero__title {
+  @apply text-white font-extrabold text-3xl sm:text-5xl leading-tight mb-4 drop-shadow
+         uppercase;
+}
+
+.home-hero__eyebrow {
+  @apply text-white/80 text-sm font-semibold mb-3 leading-relaxed tracking-wide;
+}
+
+.home-hero__lead {
+  @apply text-white/80 text-sm leading-relaxed mb-7 max-w-md;
+}
+
+.home-hero__actions {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+.home-hero__button {
+  @apply inline-flex items-center gap-2 bg-white hover:bg-[#d3f3e1] active:scale-95
+         text-[#0a5c34] font-extrabold text-base px-7 py-3 rounded-full transition-all
+         shadow-xl;
+}
+
+.home-hero__aside {
+  @apply hidden sm:block;
+}
+
+
+/* ===== home-news ===== */
+
+.home-news {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-3 gap-5;
+}
+
+
+/* ===== home-card ===== */
+
+.home-card {
+  @apply border border-black/20 rounded-2xl overflow-hidden shadow-sm;
+}
+
+.home-card__header {
+  @apply bg-gradient-to-r from-[#0a5c34] via-[#0f7a45] to-[#14a85c] text-white px-5 py-4 flex
+         items-center justify-between;
+}
+
+.home-card__title {
+  @apply flex items-center gap-2 font-semibold text-sm;
+}
+
+.home-card__more {
+  @apply text-xs text-white/65 hover:text-white flex items-center gap-1 transition-colors;
+}
+
+.home-card__list {
+  @apply divide-y divide-gray-50;
+}
+
+
+/* ===== icon-4 ===== */
+
+.icon-4 {
+  @apply w-4 h-4;
+}
+
+
+/* ===== icon-3_5 ===== */
+
+.icon-3_5 {
+  @apply w-3.5 h-3.5;
+}
+
+
+/* ===== home-card-programs ===== */
+
+.home-card-programs {
+  @apply border border-black/20 rounded-2xl overflow-hidden shadow-sm flex flex-col;
+}
+
+.home-card-programs__tagline {
+  @apply text-xs text-white/65;
+}
+
+.home-card-programs__list {
+  @apply divide-y divide-gray-50 flex flex-col h-full;
+}
+
+.home-card-programs__item {
+  @apply flex items-center gap-3 p-5 hover:bg-[#e4f8ec] transition-colors block flex-1;
+}
+
+.home-card-programs__image {
+  @apply w-[5.25rem] h-28 object-cover object-top rounded-lg shrink-0 bg-gray-200;
+}
+
+.home-card-programs__body {
+  @apply flex-1 min-w-0;
+}
+
+.home-card-programs__code {
+  @apply font-extrabold text-[#0b7a43] text-base;
+}
+
+.home-card-programs__name {
+  @apply text-xs text-gray-500 leading-snug mt-1;
+}
+
+.home-card-programs__go {
+  @apply w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center
+         from-[#0a5c34] via-[#0f7a45] to-[#14a85c] transition-all shrink-0;
+  .home-card-programs__item:hover & {
+    @apply border-[#0d4a2e] bg-gradient-to-br text-white;
+  }
+}
+
+.home-card-programs__cta {
+  @apply p-5 flex-1 flex items-center;
+}
+
+.home-card-programs__cta-inner {
+  @apply flex items-center gap-3 w-full;
+}
+
+.home-card-programs__cta-icon {
+  @apply w-14 h-14 rounded-xl bg-[#d3f3e1] flex items-center justify-center shrink-0;
+}
+
+.home-card-programs__cta-glyph {
+  @apply w-7 h-7 text-[#0b7a43];
+}
+
+.home-card-programs__cta-title {
+  @apply font-semibold text-gray-800 text-sm;
+}
+
+.home-card-programs__cta-text {
+  @apply text-xs text-gray-500 mt-0.5;
+}
+
+
+/* ===== icon-3 ===== */
+
+.icon-3 {
+  @apply w-3 h-3;
+}
+
+
+/* ===== site-footer ===== */
+
+.site-footer {
+  @apply bg-gradient-to-br from-[#0a5c34] via-[#0f7a45] to-[#14a85c] text-white mt-0;
+}
+
+.site-footer__grid {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
+         gap-6;
+}
+
+.site-footer__brand {
+  @apply flex items-start gap-3;
+}
+
+.site-footer__logo {
+  @apply w-12 h-12 object-cover rounded-full ring-2 ring-white/20 shrink-0;
+}
+
+.site-footer__name {
+  @apply font-bold text-sm leading-snug;
+}
+
+.site-footer__college {
+  @apply text-white/55 text-xs;
+}
+
+.site-footer__address {
+  @apply text-white/40 text-xs mt-0.5 leading-snug flex items-start gap-1;
+}
+
+.site-footer__link {
+  @apply hover:text-white hover:underline;
+}
+
+.site-footer__bottom {
+  @apply border-t border-white/10 text-center py-4 text-white/35 text-xs;
+}
+
+
+/* ===== icon-3-fixed-raised ===== */
+
+.icon-3-fixed-raised {
+  @apply w-3 h-3 shrink-0 mt-0.5;
+}
+
+
+/* ===== footer-contact-us ===== */
+
+.footer-contact-us__subheading {
+  @apply font-semibold mb-3 text-sm;
+}
+
+.footer-contact-us__list {
+  @apply space-y-2 text-sm text-white/65;
+}
+
+.footer-contact-us__item {
+  @apply flex gap-2 items-start;
+}
+
+.footer-contact-us__link {
+  @apply hover:text-white underline-offset-2 hover:underline;
+}
+
+
+/* ===== icon-4-fixed-raised ===== */
+
+.icon-4-fixed-raised {
+  @apply w-4 h-4 shrink-0 mt-0.5;
+}
+
+
+/* ===== footer-need-help ===== */
+
+.footer-need-help__column {
+  @apply flex flex-col gap-1.5 text-sm text-white/65;
+}
+
+.footer-need-help__link {
+  @apply hover:text-white transition-colors;
+}
+
+
+/* ===== footer-follow-us ===== */
+
+.footer-follow-us__row {
+  @apply flex gap-3;
+}
+
+.footer-follow-us__link {
+  @apply w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 active:scale-90 flex items-center
+         justify-center transition-all;
+}
+
+.footer-follow-us__text {
+  @apply text-white/40 text-xs mt-6 italic leading-relaxed;
+}
+
+
+/* ===== toast-region ===== */
+
+.toast-region {
+  @apply fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] pointer-events-none px-4 w-full
+         max-w-md;
+}
+
+
+/* ===== settings-panel ===== */
+
+.settings-panel {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
+}
+
+.settings-panel__dialog {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden;
+}
+
+.settings-panel__header {
+  @apply bg-gradient-to-r from-[#0a5c34] via-[#0f7a45] to-[#14a85c] text-white px-6 py-4 flex
+         items-center justify-between;
+}
+
+.settings-panel__heading {
+  @apply font-bold text-lg flex items-center gap-2;
+}
+
+.settings-panel__close {
+  @apply p-1 rounded-full hover:bg-white/20 transition-colors;
+}
+
+.settings-panel__body {
+  @apply p-6 space-y-6;
+}
+
+.settings-panel__group-title {
+  @apply text-sm font-bold text-gray-900 mb-1;
+}
+
+.settings-panel__hint {
+  @apply text-xs text-gray-500 mb-3;
+}
+
+.settings-panel__choices {
+  @apply grid grid-cols-2 gap-2;
+}
+
+.settings-panel__choice {
+  @apply rounded-xl border py-3 font-semibold transition text-sm bg-white text-gray-800
+         border-gray-300 hover:bg-[#d3f3e1];
+}
+
+.settings-panel__choice-note {
+  @apply block text-[0.75rem] font-medium mt-0.5;
+}
+
+.settings-panel__choice-large {
+  @apply rounded-xl border py-3 font-semibold transition text-base bg-white text-gray-800
+         border-gray-300 hover:bg-[#d3f3e1];
+}
+
+.settings-panel__switches {
+  @apply space-y-3;
+}
+
+.settings-panel__switch-row {
+  @apply flex items-center gap-4;
+}
+
+.settings-panel__switch-text {
+  @apply flex-1;
+}
+
+.settings-panel__switch-title {
+  @apply text-sm font-bold text-gray-900;
+}
+
+.settings-panel__switch-hint {
+  @apply text-xs text-gray-500;
+}
+
+.settings-panel__switch {
+  @apply relative w-12 h-7 rounded-full transition-colors shrink-0 bg-gray-300;
+}
+
+.settings-panel__knob {
+  @apply absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform;
+}
+
+.settings-panel__footer {
+  @apply flex justify-end items-center pt-4 border-t border-gray-100;
+}
+
+.settings-panel__done {
+  @apply bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white text-sm font-semibold px-6
+         py-2.5 rounded-full hover:brightness-110 active:scale-95 transition;
+}
+
+
+/* ===== portal-notice ===== */
+
+.portal-notice {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4;
+}
+
+.portal-notice__dialog {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-center;
+}
+
+.portal-notice__header {
+  @apply bg-gradient-to-r from-[#0a5c34] via-[#0f7a45] to-[#14a85c] px-6 py-6;
+}
+
+.portal-notice__badge {
+  @apply w-14 h-14 mx-auto rounded-full bg-white/20 text-white flex items-center justify-center;
+}
+
+.portal-notice__body {
+  @apply p-6;
+}
+
+.portal-notice__heading {
+  @apply text-lg font-extrabold text-gray-900;
+}
+
+.portal-notice__text {
+  @apply text-gray-700 mt-2;
+}
+
+.portal-notice__hint {
+  @apply text-sm text-gray-500 mt-1;
+}
+
+.portal-notice__button {
+  @apply mt-5 bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white text-sm font-semibold
+         px-8 py-2.5 rounded-full hover:brightness-110 active:scale-95 transition;
+}
+
+
+/* ===== icon-7 ===== */
+
+.icon-7 {
+  @apply w-7 h-7;
+}
+
+
+/* ===== page-hero ===== */
+
+.page-hero {
+  @apply bg-gradient-to-br from-[#0a5c34] via-[#0f7a45] to-[#14a85c] text-white border-b
+         border-black/30;
+}
+
+.page-hero__inner {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-7;
+}
+
+.page-hero__title {
+  @apply px-4 text-xl sm:text-3xl font-extrabold leading-tight;
+}
+
+.page-hero__text {
+  @apply px-4 mt-2 text-white/80 max-w-2xl text-sm leading-relaxed;
+}
+
+
+/* ===== page-content ===== */
+
+.page-content {
+  @apply max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10;
+}
+
+
+/* ===== section-heading ===== */
+
+.section-heading {
+  @apply text-xl font-bold text-[#0b7a43] mb-3 pb-2 border-b border-gray-100;
+}
+
+
+/* ===== section-text ===== */
+
+.section-text {
+  @apply text-gray-600 leading-relaxed mb-3;
+}
+
+
+/* ===== bullet-list ===== */
+
+.bullet-list {
+  @apply space-y-2;
+}
+
+
+/* ===== bullet-item ===== */
+
+.bullet-item {
+  @apply flex gap-3 text-gray-600;
+}
+
+
+/* ===== bullet-dot ===== */
+
+.bullet-dot {
+  @apply mt-2 w-1.5 h-1.5 rounded-full bg-[#0b7a43] shrink-0;
+}
+
+
+/* ===== home-button ===== */
+
+.home-button {
+  @apply fixed bottom-6 right-6 z-40 flex items-center bg-gradient-to-r from-[#0a5c34]
+         to-[#14a85c] text-white text-sm font-semibold h-12 px-3.5 rounded-full shadow-lg
+         hover:brightness-110 active:scale-95 transition;
+}
+
+.home-button__label {
+  @apply max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200;
+  .home-button:hover & {
+    @apply max-w-20 opacity-100 ml-2;
+  }
+  .home-button:focus-visible & {
+    @apply max-w-20 opacity-100 ml-2;
+  }
+  .home-button:active & {
+    @apply max-w-20 opacity-100 ml-2;
+  }
+}
+
+
+/* ===== stack-8 ===== */
+
+.stack-8 {
+  @apply space-y-8;
+}
+
+
+/* ===== stack-10 ===== */
+
+.stack-10 {
+  @apply space-y-10;
+}
+
+
+/* ===== program-section ===== */
+
+.program-section {
+  @apply space-y-10 scroll-mt-24;
+}
+
+
+/* ===== program-overview ===== */
+
+.program-overview {
+  @apply grid lg:grid-cols-[1fr_13rem] lg:min-h-[17.34rem] gap-8 items-start;
+}
+
+
+/* ===== program-photo ===== */
+
+.program-photo {
+  @apply relative rounded-2xl overflow-hidden shadow-lg aspect-[3/4] bg-gray-900 w-full max-w-[13rem] mx-auto;
+}
+
+.program-photo__image {
+  @apply absolute inset-0 w-full h-full object-cover;
+}
+
+.program-photo__shade {
+  @apply absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent;
+}
+
+.program-photo__caption {
+  @apply absolute left-4 right-4 bottom-5 text-white font-bold text-base;
+}
+
+.program-photo__bar {
+  @apply absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-[#0a5c34] to-[#14a85c];
+}
+
+
+/* ===== highlight-label ===== */
+
+.program-section .section-text,
+.program-section .bullet-item {
+  text-align: justify;
+}
+
+.highlight-label {
+  @apply text-gray-800 font-semibold;
+}
+
+
+/* ===== contact-cards ===== */
+
+.contact-cards {
+  @apply grid md:grid-cols-3 gap-6;
+}
+
+
+/* ===== contact-card ===== */
+
+.contact-card {
+  @apply bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col text-center;
+}
+
+.contact-card__photo {
+  @apply h-36 bg-[#0a5c34] bg-cover bg-center relative;
+}
+
+.contact-card__shade {
+  @apply absolute inset-0 bg-gradient-to-b from-[#07391f]/85 via-[#0a5c34]/80 to-[#0f7a45]/75;
+}
+
+.contact-card__badge {
+  @apply relative -mt-9 mx-auto w-[72px] h-[72px] rounded-full bg-white shadow-lg flex
+         items-center justify-center;
+}
+
+.contact-card__badge-inner {
+  @apply w-[52px] h-[52px] rounded-full bg-[#d3f3e1] flex items-center justify-center;
+}
+
+.contact-card__icon {
+  @apply w-6 h-6 text-[#0a5c34];
+}
+
+.contact-card__title {
+  @apply text-xl font-bold text-gray-900 mt-4;
+}
+
+.contact-card__text {
+  @apply text-sm text-gray-700 leading-relaxed mt-2 px-6 flex-1;
+}
+
+.contact-card__action {
+  @apply px-11 pt-5 pb-6;
+}
+
+.contact-card__button {
+  @apply flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r
+         from-[#0a5c34] to-[#0f7a45] text-white text-sm font-bold py-3.5 px-4
+         hover:brightness-110 active:scale-[0.98] transition;
+}
+
+
+/* ===== social-links ===== */
+
+.social-links {
+  @apply flex justify-center gap-3;
+}
+
+.social-links__item {
+  @apply relative;
+}
+
+.social-links__tip {
+  @apply pointer-events-none absolute left-1/2 -top-10 -translate-x-1/2 whitespace-nowrap
+         rounded-md bg-[#101828] px-2.5 py-1 text-xs font-semibold text-white opacity-0
+         shadow-lg transition-opacity;
+  .social-links__item:hover & {
+    @apply opacity-100;
+  }
+  .social-links__item:focus-within & {
+    @apply opacity-100;
+  }
+}
+
+
+/* ===== social-link-facebook ===== */
+
+.social-link-facebook {
+  @apply w-12 h-12 rounded-full bg-[#e8f6ee] text-[#0a5c34] flex items-center justify-center
+         transition duration-200 hover:text-white focus-visible:text-white hover:scale-105
+         focus-visible:scale-105 hover:bg-[#1877f2] focus-visible:bg-[#1877f2];
+}
+
+
+/* ===== social-link-instagram ===== */
+
+.social-link-instagram {
+  @apply w-12 h-12 rounded-full bg-[#e8f6ee] text-[#0a5c34] flex items-center justify-center
+         transition duration-200 hover:text-white focus-visible:text-white hover:scale-105
+         focus-visible:scale-105 hover:bg-[linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)]
+         focus-visible:bg-[linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)];
+}
+
+
+/* ===== social-link-tiktok ===== */
+
+.social-link-tiktok {
+  @apply w-12 h-12 rounded-full bg-[#e8f6ee] text-[#0a5c34] flex items-center justify-center
+         transition duration-200 hover:text-white focus-visible:text-white hover:scale-105
+         focus-visible:scale-105 hover:bg-black focus-visible:bg-black;
+}
+
+
+/* ===== contact-layout ===== */
+
+.contact-layout {
+  @apply grid lg:grid-cols-12 gap-10 items-start;
+}
+
+
+/* ===== contact-form ===== */
+
+.contact-form {
+  @apply lg:col-span-7 bg-white border border-gray-400 rounded-3xl shadow-xl p-6 sm:p-8;
+}
+
+.contact-form__heading {
+  @apply flex items-center gap-3 text-xl font-bold text-gray-900;
+}
+
+.contact-form__bar {
+  @apply w-1 h-6 rounded bg-[#0b7a43];
+}
+
+.contact-form__intro {
+  @apply text-sm text-gray-500 mt-2 mb-4;
+}
+
+.contact-form__required {
+  @apply text-[#b91c1c] font-bold;
+}
+
+.contact-form__row-3 {
+  @apply grid sm:grid-cols-3 gap-4;
+}
+
+.contact-form__row-2 {
+  @apply grid sm:grid-cols-2 gap-4 mt-4;
+}
+
+.contact-form__field {
+  @apply mt-4;
+}
+
+.contact-form__actions {
+  @apply mt-5 flex justify-end;
+}
+
+.contact-form__submit {
+  @apply inline-flex items-center gap-2 bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white
+         text-sm font-semibold px-6 py-3 rounded-lg hover:brightness-110 active:scale-95
+         transition;
+}
+
+
+/* ===== form-label ===== */
+
+.form-label {
+  @apply block text-xs font-semibold text-gray-800;
+}
+
+
+/* ===== form-required ===== */
+
+.form-required {
+  @apply text-[#b91c1c];
+}
+
+
+/* ===== form-select-wrap ===== */
+
+.form-select-wrap {
+  @apply relative mt-1.5;
+}
+
+
+/* ===== form-select ===== */
+
+.form-select {
+  @apply w-full border border-gray-500 rounded-lg px-3.5 py-2.5 text-[15px] text-gray-800
+         bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2
+         focus:ring-[#14a85c]/40 focus:border-[#0b7a43] appearance-none pr-10 font-normal;
+}
+
+
+/* ===== form-select-icon ===== */
+
+.form-select-icon {
+  @apply pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0a5c34];
+}
+
+
+/* ===== form-input ===== */
+
+.form-input {
+  @apply w-full border border-gray-500 rounded-lg px-3.5 py-2.5 text-[15px] text-gray-800
+         bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2
+         focus:ring-[#14a85c]/40 focus:border-[#0b7a43] mt-1.5 font-normal;
+}
+
+
+/* ===== phone-hint ===== */
+
+.phone-hint {
+  @apply text-[0.75rem] text-gray-500 mt-1.5;
+}
+
+
+/* ===== form-optional ===== */
+
+.form-optional {
+  @apply font-normal text-gray-500;
+}
+
+
+/* ===== contact-aside ===== */
+
+.contact-aside {
+  @apply lg:col-span-5 space-y-5;
+}
+
+
+/* ===== campus-map ===== */
+
+.campus-map {
+  @apply bg-white border border-gray-200 rounded-2xl p-2.5 scroll-mt-24;
+}
+
+.campus-map__image {
+  @apply w-full rounded-lg border border-gray-200 cursor-zoom-in;
+}
+
+.campus-map__trigger {
+  @apply block w-full rounded-lg cursor-zoom-in;
+}
+
+.campus-map__caption {
+  @apply flex justify-between text-xs text-gray-600 px-1.5 pt-2 pb-1;
+}
+
+.campus-map__open {
+  @apply text-[#0a5c34] underline;
+}
+
+
+/* ===== school-address ===== */
+
+.school-address {
+  @apply bg-white border border-gray-200 rounded-2xl p-5;
+}
+
+.school-address__title {
+  @apply font-bold text-[#0a5c34] text-lg;
+}
+
+.school-address__list {
+  @apply mt-3 space-y-2.5 text-sm text-gray-800;
+}
+
+.school-address__item {
+  @apply flex gap-2.5;
+}
+
+.school-address__icon {
+  @apply w-4 h-4 mt-0.5 shrink-0 text-[#0b7a43];
+}
+
+.school-address__link {
+  @apply hover:underline;
+}
+
+.school-address__link-strong {
+  @apply underline text-[#0a5c34];
+}
+
+
+/* ===== download-card ===== */
+
+.download-card {
+  @apply flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-gray-200
+         bg-white px-5 py-4 hover:border-[#14a85c] hover:shadow-md transition;
+}
+
+.download-card__icon {
+  @apply w-11 h-11 rounded-xl bg-[#d3f3e1] text-[#0a5c34] flex items-center justify-center
+         shrink-0;
+}
+
+.download-card__title {
+  @apply font-semibold text-gray-900;
+}
+
+.download-card__text {
+  @apply text-sm text-gray-600 leading-relaxed mt-0.5;
+}
+
+.download-card__meta {
+  @apply text-xs text-gray-400 mt-1;
+}
+
+.download-card__preview {
+  @apply inline-flex items-center justify-center gap-2 shrink-0 border border-[#0b7a43]
+         text-[#0a5c34] text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#d3f3e1]
+         active:scale-95 transition;
+}
+
+.download-card__download {
+  @apply inline-flex items-center justify-center gap-2 shrink-0 bg-gradient-to-r from-[#0a5c34]
+         to-[#14a85c] text-white text-sm font-semibold px-5 py-2.5 rounded-full
+         hover:brightness-110 active:scale-95 transition;
+}
+
+
+/* ===== faculty-grid ===== */
+
+.faculty-grid {
+  @apply grid grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6;
+}
+
+
+/* ===== faculty-card ===== */
+
+.faculty-card {
+  @apply rounded-2xl border border-gray-200 bg-white p-3 text-center shadow-sm hover:shadow-md
+         hover:border-[#14a85c] transition h-full flex flex-col;
+}
+
+.faculty-card__photo {
+  @apply w-full aspect-square object-cover object-top rounded-xl bg-gray-50;
+}
+
+.faculty-card__body {
+  @apply pt-3 pb-2 px-1;
+}
+
+.faculty-card__name {
+  @apply font-bold text-gray-900;
+}
+
+.faculty-card__role {
+  @apply text-sm text-gray-500 leading-snug mt-0.5;
+}
+
+
+/* ===== service-grid ===== */
+
+.service-grid {
+  @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+
+/* ===== service-card ===== */
+
+.service-card {
+  @apply block border border-gray-200 rounded-xl p-5 bg-white border-t border-t-black/20
+         hover:border-[#14a85c] hover:shadow-sm transition;
+}
+
+.service-card__title {
+  @apply font-semibold text-gray-900 mb-1;
+}
+
+.service-card__text {
+  @apply text-sm text-gray-600 leading-relaxed;
+}
+
+
+/* ===== portal-actions ===== */
+
+.portal-actions {
+  @apply pt-4 border-t border-gray-100;
+}
+
+
+/* ===== portal-login ===== */
+
+.portal-login {
+  @apply inline-flex items-center gap-2 bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white
+         font-semibold px-6 py-3 rounded-full hover:brightness-110 active:scale-95 transition;
+}
+
+
+/* ===== search-results ===== */
+
+.search-results {
+  @apply max-h-[26rem] overflow-auto bg-white border border-gray-200 rounded-2xl shadow-xl
+         py-1.5 z-50;
+}
+
+.search-results--mobile {
+  @apply relative mt-2 w-full;
+}
+
+.search-results--desktop {
+  @apply absolute right-0 top-full mt-2 w-[26rem] max-w-[90vw];
+}
+
+.search-results__option {
+  @apply w-full text-left px-4 py-2.5 transition-colors;
+}
+
+.search-results__heading {
+  @apply px-4 pt-1 pb-1.5 text-[0.75rem] font-bold text-gray-400 uppercase tracking-wider;
+}
+
+.search-results__empty {
+  @apply px-4 py-3 text-sm text-gray-500;
+}
+
+.search-results__title {
+  @apply text-sm font-semibold text-gray-900 line-clamp-1;
+}
+
+.search-results__section {
+  @apply text-xs text-[#0a5c34] line-clamp-1;
+}
+
+
+/* ===== event-filter ===== */
+
+.event-filter__select {
+  @apply bg-white border-2 border-gray-300 rounded-full pl-4 pr-9 py-2.5 text-sm font-semibold
+         text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#14a85c]/40
+         hover:border-[#0b7a43] cursor-pointer transition block mt-1;
+}
+
+.event-filter__select--month {
+  @apply min-w-48;
+}
+
+.event-filter__select--year {
+  @apply min-w-32;
+}
+
+.event-filter__all {
+  @apply px-5 py-2.5 rounded-full text-sm font-bold border-2 transition bg-white text-[#0a5c34]
+         border-[#0b7a43] hover:bg-[#d3f3e1] hover:shadow;
+}
+
+.event-filter__count {
+  @apply ml-2 text-xs rounded-full px-2 py-0.5 bg-[#d3f3e1];
+}
+
+.event-filter {
+  @apply flex flex-wrap items-end gap-3;
+}
+
+.event-filter__label {
+  @apply text-xs font-semibold text-gray-600;
+}
+
+.event-filter__all-label {
+  @apply inline-flex items-center gap-2;
+}
+
+
+/* ===== calendar ===== */
+
+.calendar__term {
+  @apply text-xs font-semibold text-white px-3 py-1.5 rounded-full bg-gradient-to-r transition
+         hover:brightness-110 hover:opacity-100 active:scale-95 opacity-60;
+}
+
+.calendar__term--1 {
+  @apply from-[#0a5c34] to-[#14a85c];
+}
+
+.calendar__term--2 {
+  @apply from-[#0c6a3c] to-[#2ab06b];
+}
+
+.calendar__term--3 {
+  @apply from-[#0d8a4e] to-[#4cc58a];
+}
+
+.calendar__chevron {
+  @apply w-4 h-4 transition-transform;
+}
+
+.calendar__month {
+  @apply py-2 rounded-lg text-sm font-semibold transition bg-[#eef6f1] text-gray-800
+         hover:bg-[#d3f3e1];
+}
+
+.calendar__day {
+  @apply h-14 sm:h-24 overflow-hidden rounded-lg border p-1 sm:p-1.5 flex flex-col gap-1
+         text-left items-stretch transition;
+}
+
+.calendar__day-number {
+  @apply text-xs sm:text-sm font-semibold;
+}
+
+.calendar__day-number--holiday {
+  @apply text-[#0a3d24];
+}
+
+.calendar__day-number--events {
+  @apply text-[#0a5c34];
+}
+
+.calendar__day-number--muted {
+  @apply text-gray-600;
+}
+
+.calendar__pill {
+  @apply hidden sm:block truncate text-[0.75rem] leading-4 font-semibold text-white rounded
+         px-1.5;
+}
+
+.calendar__pill--holiday {
+  @apply bg-[#0a3d24];
+}
+
+.calendar__pill--alt {
+  @apply bg-[#083d24];
+}
+
+.calendar__pill--event {
+  @apply bg-[#0b7a43];
+}
+
+.calendar__dot {
+  @apply sm:hidden w-1.5 h-1.5 rounded-full bg-[#0b7a43];
+}
+
+.calendar__dot--holiday {
+  @apply bg-[#0a3d24];
+}
+
+.calendar__badge {
+  @apply w-14 shrink-0 rounded-xl text-white text-center py-2 bg-[#0b7a43];
+}
+
+.calendar__badge--holiday {
+  @apply bg-[#0a3d24];
+}
+
+.calendar__terms {
+  @apply flex flex-wrap items-center gap-x-4 gap-y-2 mb-5;
+}
+
+.calendar__legend-event {
+  @apply flex items-center gap-1.5 text-xs text-gray-600 ml-auto;
+}
+
+.calendar__legend-dot {
+  @apply w-3 h-3 rounded bg-[#0b7a43];
+}
+
+.calendar__legend-holiday {
+  @apply flex items-center gap-1.5 text-xs text-gray-600;
+}
+
+.calendar__legend-dot--holiday {
+  @apply w-3 h-3 rounded bg-[#0a3d24];
+}
+
+.calendar__layout {
+  @apply grid lg:grid-cols-12 gap-8 items-start;
+}
+
+.calendar__panel {
+  @apply lg:col-span-8 bg-white border border-gray-200 rounded-3xl shadow-lg p-3 sm:p-5
+         relative outline-none;
+}
+
+.calendar__toolbar {
+  @apply flex items-center gap-2 mb-4;
+}
+
+.calendar__nav-button {
+  @apply w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center
+         text-[#0a5c34] hover:bg-[#d3f3e1] transition;
+}
+
+.calendar__title-button {
+  @apply flex-1 flex items-center justify-center gap-2 text-lg sm:text-xl font-extrabold
+         text-[#0a5c34] rounded-full py-1.5 hover:bg-[#e4f8ec] transition;
+}
+
+.calendar__today {
+  @apply px-3.5 py-2 rounded-full text-xs font-semibold bg-[#0b7a43] text-white
+         hover:brightness-110 transition;
+}
+
+.calendar__picker {
+  @apply absolute z-20 left-3 right-3 sm:left-5 sm:right-5 top-16 bg-white border
+         border-gray-200 rounded-2xl shadow-2xl p-4;
+}
+
+.calendar__picker-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.calendar__picker-nav {
+  @apply w-8 h-8 rounded-full border border-gray-300 hover:bg-[#d3f3e1];
+}
+
+.calendar__picker-months {
+  @apply grid grid-cols-3 sm:grid-cols-4 gap-2;
+}
+
+.calendar__weekdays {
+  @apply grid grid-cols-7 gap-1 sm:gap-1.5 mb-2;
+}
+
+.calendar__weekday {
+  @apply text-center text-[0.75rem] sm:text-xs font-bold tracking-wider text-[#0b7a43] py-2;
+}
+
+.calendar__days {
+  @apply grid grid-cols-7 gap-1 sm:gap-1.5;
+}
+
+.calendar__more {
+  @apply hidden sm:block text-[0.75rem] font-semibold text-[#0a5c34];
+}
+
+.calendar__hint {
+  @apply text-[0.8125rem] text-gray-400 mt-3 text-center;
+}
+
+.calendar__side {
+  @apply lg:col-span-4 lg:relative lg:self-stretch;
+}
+
+.calendar__side-inner {
+  @apply lg:absolute lg:inset-0 flex flex-col;
+}
+
+.calendar__side-header {
+  @apply flex items-center gap-3 mb-4 shrink-0;
+}
+
+.calendar__side-title {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.calendar__show-all {
+  @apply ml-auto text-xs font-semibold text-[#0a5c34] underline;
+}
+
+.calendar__events {
+  @apply space-y-2.5 flex-1 min-h-0 max-h-[28rem] lg:max-h-none overflow-y-auto pr-1.5 pb-1;
+}
+
+.calendar__empty {
+  @apply bg-white border border-dashed border-gray-300 rounded-2xl p-6 text-center text-sm
+         text-gray-500;
+}
+
+.calendar__empty-icon {
+  @apply w-10 h-10 mx-auto mb-2 rounded-full bg-[#d3f3e1] text-[#0a5c34] flex items-center
+         justify-center;
+}
+
+.calendar__empty-action {
+  @apply mt-2 font-semibold text-[#0a5c34] underline;
+}
+
+.calendar__event {
+  @apply flex items-center gap-3 bg-white border border-gray-200 rounded-2xl p-2.5;
+}
+
+.calendar__event-body {
+  @apply min-w-0;
+}
+
+.calendar__event-title {
+  @apply text-sm font-bold text-gray-900 leading-snug;
+}
+
+.calendar__event-date {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+.calendar__note {
+  @apply text-xs text-gray-400 mt-6;
+}
+
+
+/* ===== toast ===== */
+
+.toast {
+  @apply pointer-events-auto bg-[#0a3d24] text-white text-sm font-medium rounded-2xl shadow-2xl
+         px-5 py-3.5 flex items-start gap-3 animate-[fadeIn_0.15s_ease];
+}
+
+.toast__dismiss {
+  @apply text-white/70 hover:text-white;
+}
+
+
+/* ===== event-modal ===== */
+
+.event-modal {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm p-4;
+}
+
+.event-modal__dialog {
+  @apply bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-auto;
+}
+
+.event-modal__photo {
+  @apply relative aspect-[16/9] bg-gray-100;
+}
+
+.event-modal__placeholder {
+  @apply absolute inset-0 bg-gradient-to-br from-[#e4f8ec] to-[#c4ecd6] flex items-center
+         justify-center;
+}
+
+.event-modal__placeholder-logo {
+  @apply w-20 h-20 object-contain opacity-60;
+}
+
+.event-modal__date {
+  @apply absolute top-4 left-4 w-16 rounded-xl bg-[#0b7a43] text-white text-center py-2
+         shadow-md;
+}
+
+.event-modal__day {
+  @apply text-2xl font-bold leading-none;
+}
+
+.event-modal__month {
+  @apply text-[0.75rem] font-semibold tracking-wider mt-1;
+}
+
+.event-modal__close {
+  @apply absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 text-[#0a5c34] shadow flex
+         items-center justify-center hover:bg-white active:scale-95 transition;
+}
+
+.event-modal__body {
+  @apply p-6 sm:p-7;
+}
+
+.event-modal__tags {
+  @apply flex flex-wrap items-center gap-2 mb-3;
+}
+
+.event-modal__tag {
+  @apply text-[0.8125rem] font-semibold bg-[#d3f3e1] text-[#0a5c34] rounded-full px-3 py-1;
+}
+
+.event-modal__kind {
+  @apply text-[0.8125rem] font-semibold text-gray-500;
+}
+
+.event-modal__heading {
+  @apply text-xl sm:text-2xl font-extrabold text-gray-900 leading-snug;
+}
+
+.event-modal__when {
+  @apply flex items-center gap-2 text-sm text-gray-600 mt-2;
+}
+
+.event-modal__when-icon {
+  @apply w-4 h-4 text-[#0b7a43];
+}
+
+.event-modal__description {
+  @apply text-gray-700 leading-relaxed mt-4;
+}
+
+.event-modal__actions {
+  @apply flex flex-wrap gap-3 mt-6;
+}
+
+.event-modal__primary {
+  @apply inline-flex items-center gap-2 bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white
+         text-sm font-semibold px-5 py-2.5 rounded-full hover:brightness-110 active:scale-95
+         transition;
+}
+
+.event-modal__secondary {
+  @apply text-sm font-semibold text-[#0a5c34] border border-[#0b7a43] rounded-full px-5 py-2.5
+         hover:bg-[#d3f3e1] transition;
+}
+
+
+/* ===== event-card ===== */
+
+.event-card {
+  @apply cursor-pointer flex flex-col bg-white border border-gray-200 rounded-2xl
+         overflow-hidden shadow-sm hover:shadow-lg hover:border-[#14a85c] transition h-full;
+}
+
+.event-card__photo {
+  @apply relative aspect-[16/10] bg-gray-100;
+}
+
+.event-card__placeholder {
+  @apply absolute inset-0 bg-gradient-to-br from-[#e4f8ec] to-[#c4ecd6] flex flex-col
+         items-center justify-center gap-2 text-[#0a5c34];
+}
+
+.event-card__placeholder-logo {
+  @apply w-14 h-14 object-contain opacity-60;
+}
+
+.event-card__placeholder-text {
+  @apply text-[0.8125rem] font-semibold uppercase tracking-wider opacity-70;
+}
+
+.event-card__date {
+  @apply absolute top-3 left-3 w-14 rounded-xl bg-[#0b7a43] text-white text-center py-1.5
+         shadow-md;
+}
+
+.event-card__day {
+  @apply text-xl font-bold leading-none;
+}
+
+.event-card__month {
+  @apply text-[0.75rem] font-semibold tracking-wider mt-0.5;
+}
+
+.event-card__tag {
+  @apply absolute top-3 right-3 text-[0.8125rem] font-semibold bg-white/95 text-[#0a5c34]
+         rounded-full px-2.5 py-1 shadow;
+}
+
+.event-card__body {
+  @apply flex flex-col flex-1 p-5;
+}
+
+.event-card__title {
+  @apply font-bold text-gray-900 leading-snug line-clamp-2;
+}
+
+.event-card__title-button {
+  @apply text-left;
+}
+
+.event-card__description {
+  @apply text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3 flex-1;
+}
+
+.event-card__footer {
+  @apply text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100;
+}
+
+
+/* ===== event-list ===== */
+
+.event-list__empty {
+  @apply border border-dashed border-gray-300 rounded-2xl p-10 text-center bg-gray-50/50;
+}
+
+.event-list__empty-icon {
+  @apply w-14 h-14 mx-auto rounded-full bg-[#d3f3e1] text-[#0a5c34] flex items-center
+         justify-center;
+}
+
+.event-list__empty-title {
+  @apply font-bold text-gray-900 mt-4;
+}
+
+.event-list__empty-actions {
+  @apply flex flex-wrap justify-center gap-3 mt-5;
+}
+
+.event-list__empty-primary {
+  @apply text-sm font-semibold text-white bg-gradient-to-r from-[#0a5c34] to-[#14a85c]
+         rounded-full px-5 py-2.5 hover:brightness-110 transition;
+}
+
+.event-list__month {
+  @apply scroll-mt-24;
+}
+
+.event-list__month-header {
+  @apply flex items-center gap-3 mb-5;
+}
+
+.event-list__month-bar {
+  @apply w-1.5 h-8 rounded bg-[#0b7a43];
+}
+
+.event-list__month-title {
+  @apply text-2xl font-extrabold text-[#0a5c34];
+}
+
+.event-list__month-count {
+  @apply text-sm font-semibold text-gray-500 bg-gray-100 rounded-full px-3 py-1;
+}
+
+.event-list__month-line {
+  @apply flex-1 h-px bg-gray-200;
+}
+
+.event-list__grid {
+  @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+
+/* ===== pdf-preview ===== */
+
+.pdf-preview {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4;
+}
+
+.pdf-preview__dialog {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[85vh] flex flex-col
+         overflow-hidden;
+}
+
+.pdf-preview__header {
+  @apply flex items-center gap-3 bg-gradient-to-r from-[#0a5c34] via-[#0f7a45] to-[#14a85c]
+         text-white px-5 py-3 shrink-0;
+}
+
+.pdf-preview__heading {
+  @apply font-bold flex-1 truncate;
+}
+
+.pdf-preview__open {
+  @apply text-sm font-semibold bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5
+         transition;
+}
+
+.pdf-preview__close {
+  @apply w-9 h-9 rounded-full hover:bg-white/20 flex items-center justify-center;
+}
+
+.pdf-preview__frame {
+  @apply flex-1 w-full bg-gray-100;
+}
+
+
+/* ===== confirm-dialog ===== */
+
+.confirm-dialog {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden;
+}
+
+.confirm-dialog__header {
+  @apply bg-gradient-to-r from-[#0a5c34] via-[#0f7a45] to-[#14a85c] text-white px-6 py-4;
+}
+
+.confirm-dialog__heading {
+  @apply text-lg font-bold;
+}
+
+.confirm-dialog__intro {
+  @apply text-sm text-gray-600 mb-4;
+}
+
+.confirm-dialog__details {
+  @apply text-sm space-y-1.5 mb-3;
+}
+
+.confirm-dialog__label {
+  @apply w-16 shrink-0 font-semibold text-gray-500;
+}
+
+.confirm-dialog__value {
+  @apply text-gray-900 break-words min-w-0;
+}
+
+.confirm-dialog__message {
+  @apply text-sm bg-gray-50 border border-gray-200 rounded-lg p-3 text-gray-700 max-h-32
+         overflow-auto whitespace-pre-wrap;
+}
+
+.confirm-dialog__actions {
+  @apply flex flex-wrap justify-end gap-3 mt-5;
+}
+
+.confirm-dialog__confirm {
+  @apply text-sm font-semibold text-white bg-gradient-to-r from-[#0a5c34] to-[#14a85c]
+         rounded-full px-5 py-2.5 hover:brightness-110 active:scale-95 transition;
+}
+
+
+/* ===== map-viewer ===== */
+
+.map-viewer {
+  @apply fixed inset-0 z-50 bg-black/85 flex flex-col;
+}
+
+.map-viewer__bar {
+  @apply flex items-center justify-between gap-3 px-4 sm:px-6 py-3 bg-gradient-to-r
+         from-[#0a5c34] to-[#14a85c] text-white shrink-0;
+}
+
+.map-viewer__return {
+  @apply flex items-center gap-2 text-sm font-semibold bg-white/15 hover:bg-white/25
+         active:scale-95 rounded-full pl-3 pr-4 py-2 transition;
+}
+
+.map-viewer__title {
+  @apply text-sm font-semibold truncate;
+}
+
+.map-viewer__scroll {
+  @apply flex-1 overflow-auto p-3 sm:p-6;
+}
+
+.map-viewer__image {
+  @apply mx-auto max-w-none w-full lg:w-[1400px] rounded-lg bg-white shadow-2xl;
+}
+
+
+/* ===== home-announcement ===== */
+
+.home-announcement {
+  @apply w-full text-left flex items-center gap-3 p-4 hover:bg-[#e4f8ec] transition-colors
+         cursor-pointer;
+}
+
+.home-announcement__date {
+  @apply shrink-0 w-12 text-center;
+}
+
+.home-announcement__month {
+  @apply text-[0.75rem] font-bold text-[#0b7a43] uppercase tracking-wider;
+}
+
+.home-announcement__day {
+  @apply text-2xl font-extrabold text-[#0b7a43] leading-none;
+}
+
+.home-announcement__title {
+  @apply text-sm font-semibold text-gray-800 leading-snug transition-colors;
+  .home-announcement:hover & {
+    @apply text-[#0b7a43];
+  }
+}
+
+
+/* ===== home-news-item ===== */
+
+.home-news-item__image {
+  @apply w-20 h-14 object-cover rounded-lg shrink-0 bg-gray-100;
+}
+
+.home-news-item__date {
+  @apply text-[0.8125rem] text-gray-400 mb-0.5;
+}
+
+.home-news-item__description {
+  @apply text-xs text-gray-500 mt-0.5 line-clamp-2;
+}
+
+
+/* ===== form-error ===== */
+
+.form-error {
+  @apply text-xs text-[#b91c1c] mt-1.5 font-medium;
+}
+
+
+/* ===== form-summary ===== */
+
+.form-summary {
+  @apply mb-4 rounded-lg border border-[#b91c1c]/40 bg-[#fef2f2] px-4 py-3 text-sm
+         text-[#991b1b];
+}
+
+
+/* ===== contact-thanks ===== */
+
+.contact-thanks {
+  @apply py-10 text-center;
+}
+
+.contact-thanks__badge {
+  @apply w-16 h-16 mx-auto rounded-full bg-[#d3f3e1] text-[#0a5c34] flex items-center
+         justify-center;
+}
+
+.contact-thanks__icon {
+  @apply w-8 h-8;
+}
+
+.contact-thanks__message {
+  @apply text-gray-600 mt-2 max-w-md mx-auto leading-relaxed;
+}
+
+.contact-thanks__note {
+  @apply text-sm text-gray-500 mt-3 max-w-md mx-auto;
+}
+
+.contact-thanks__link {
+  @apply text-[#0a5c34] font-semibold underline;
+}
+
+.contact-thanks__again {
+  @apply mt-6 inline-flex text-sm font-semibold text-white bg-gradient-to-r from-[#0a5c34]
+         to-[#14a85c] px-5 py-2.5 rounded-md hover:brightness-110 transition;
+}
+
+
+/* ---------------------------------------------------------------------
+   3. STATES — classes that JavaScript adds and removes
+   --------------------------------------------------------------------- */
+
+
+/* Navigation */
+/* menu item for the page you are on, or an open dropdown */
+.site-nav__link.is-active,
+.site-nav__button.is-active {
+  @apply bg-black/20;
+}
+
+.site-nav__link.is-active:hover,
+.site-nav__button.is-active:hover {
+  @apply bg-black/15;
+}
+
+/* arrow of an open dropdown */
+.site-nav__chevron.is-open {
+  @apply rotate-180;
+}
+
+/* mobile menu opened with the menu button */
+.site-nav__list.is-open {
+  @apply flex;
+}
+
+
+/* Search box */
+/* text moves left while the magnifier is hidden */
+.site-search__input.is-used {
+  @apply pl-4;
+}
+
+/* magnifier hides while you use the search box */
+.site-search__icon.is-used {
+  @apply opacity-0;
+}
+
+/* highlighted search result */
+.search-results__option.is-active {
+  @apply bg-[#d3f3e1];
+}
+
+
+/* Settings panel */
+/* chosen text size */
+.settings-panel__choice.is-selected,
+.settings-panel__choice-large.is-selected,
+.settings-panel__choice.is-selected:hover,
+.settings-panel__choice-large.is-selected:hover {
+  @apply bg-[#0b7a43] text-white border-[#0b7a43];
+}
+
+/* switch turned on */
+.settings-panel__switch.is-on {
+  @apply bg-[#0b7a43];
+}
+
+/* knob slides right */
+.settings-panel__switch.is-on .settings-panel__knob {
+  @apply translate-x-5;
+}
+
+
+/* News / announcement filters */
+/* month filter in use */
+.event-filter__select.is-filtered {
+  @apply !border-[#0b7a43] !bg-[#e4f8ec];
+}
+
+/* "All months" selected */
+.event-filter__all.is-active,
+.event-filter__all.is-active:hover {
+  @apply bg-gradient-to-r from-[#0a5c34] to-[#14a85c] text-white border-[#083d24] shadow-md;
+}
+
+.event-filter__count.is-active {
+  @apply bg-white/25;
+}
+
+
+/* Calendar */
+/* chosen term */
+.calendar__term.is-selected {
+  @apply opacity-100 ring-2 ring-offset-2 ring-gray-800/30;
+}
+
+.calendar__chevron.is-open {
+  @apply rotate-180;
+}
+
+/* chosen month in the picker */
+.calendar__month.is-selected,
+.calendar__month.is-selected:hover {
+  @apply bg-[#0b7a43] text-white;
+}
+
+/* clicked day */
+.calendar__day.is-selected {
+  @apply ring-2 ring-[#0b7a43] border-[#0b7a43] bg-[#d3f3e1];
+}
+
+/* day with only holidays */
+.calendar__day.is-holiday {
+  @apply bg-[#e6efe9] border-[#b9d3c4] hover:border-[#0a3d24];
+}
+
+/* day with school events */
+.calendar__day.has-events {
+  @apply bg-[#eef9f2] border-[#bfe5cd] hover:border-[#0b7a43];
+}
+
+/* day without events */
+.calendar__day.is-empty {
+  @apply bg-white border-gray-200 hover:border-[#14a85c];
+}
+
+/* day of the previous / next month */
+.calendar__day.is-outside {
+  @apply bg-gray-50 border-gray-100 opacity-60 hover:opacity-100;
+}
+
+/* today */
+.calendar__day.is-today {
+  @apply border-2 border-[#0b7a43];
+}
+
+
+/* Forms */
+/* field with a validation error */
+.has-error {
+  @apply !border-[#b91c1c] focus:!ring-[#b91c1c]/30;
+}
+
+
+/* ===== contact-card photos (paths are relative to css/style.css) ===== */
+.contact-card__photo--visit {
+  background-image: url("../images/home/hero-bg.jpg");
+}
+.contact-card__photo--email {
+  background-image: url("../images/contact/email-us.jpg");
+}
+.contact-card__photo--follow {
+  background-image: url("../images/news/hugyaw.jpg");
+}
+
+}  /* end of @layer components */
+
+
+/* ---------------------------------------------------------------------
+   4. HIGH CONTRAST — darker text and borders, stronger hover/focus highlight
+   --------------------------------------------------------------------- */
+
+html.high-contrast .calendar__day.is-empty {
+  border-color: #6b7280 !important;
+}
+
+html.high-contrast .calendar__day.is-empty:is(:hover, :focus-visible) {
+  border-color: #0a5c34 !important;
+}
+
+html.high-contrast .calendar__day.is-empty:hover {
+  outline: 1px solid #0a5c34;
+  outline-offset: -1px;
+}
+
+html.high-contrast .calendar__day.is-outside {
+  border-color: #6b7280 !important;
+}
+
+html.high-contrast .calendar__day.is-outside:is(:hover, :focus-visible) {
+  border-color: #0a5c34 !important;
+}
+
+html.high-contrast .site-search__icon,
+html.high-contrast .home-card-programs__name,
+html.high-contrast .home-card-programs__cta-text,
+html.high-contrast .settings-panel__hint,
+html.high-contrast .settings-panel__switch-hint,
+html.high-contrast .portal-notice__hint,
+html.high-contrast .section-text,
+html.high-contrast .bullet-item,
+html.high-contrast .contact-form__intro,
+html.high-contrast .phone-hint,
+html.high-contrast .form-optional,
+html.high-contrast .campus-map__caption,
+html.high-contrast .download-card__text,
+html.high-contrast .download-card__meta,
+html.high-contrast .faculty-card__role,
+html.high-contrast .service-card__text,
+html.high-contrast .calendar__day-number--muted,
+html.high-contrast .search-results__heading,
+html.high-contrast .search-results__empty,
+html.high-contrast .event-modal__kind,
+html.high-contrast .event-modal__when,
+html.high-contrast .event-card__description,
+html.high-contrast .event-card__footer,
+html.high-contrast .event-filter__label,
+html.high-contrast .event-list__month-count,
+html.high-contrast .calendar__legend-event,
+html.high-contrast .calendar__legend-holiday,
+html.high-contrast .calendar__hint,
+html.high-contrast .calendar__empty,
+html.high-contrast .calendar__event-date,
+html.high-contrast .calendar__note,
+html.high-contrast .confirm-dialog__intro,
+html.high-contrast .confirm-dialog__label,
+html.high-contrast .home-news-item__date,
+html.high-contrast .home-news-item__description,
+html.high-contrast .contact-thanks__message,
+html.high-contrast .contact-thanks__note {
+  color: #111827 !important;
+}
+
+html.high-contrast .portal-notice__text,
+html.high-contrast .contact-card__text,
+html.high-contrast .event-modal__description,
+html.high-contrast .confirm-dialog__message {
+  color: #000 !important;
+}
+
+html.high-contrast .site-search__input,
+html.high-contrast .settings-button,
+html.high-contrast .site-nav__dropdown,
+html.high-contrast .home-card-programs__go,
+html.high-contrast .settings-panel__choice,
+html.high-contrast .settings-panel__choice-large,
+html.high-contrast .settings-panel__footer,
+html.high-contrast .section-heading,
+html.high-contrast .campus-map,
+html.high-contrast .campus-map__image,
+html.high-contrast .school-address,
+html.high-contrast .download-card,
+html.high-contrast .faculty-card,
+html.high-contrast .service-card,
+html.high-contrast .portal-actions,
+html.high-contrast .search-results,
+html.high-contrast .event-filter__select,
+html.high-contrast .event-card,
+html.high-contrast .event-card__footer,
+html.high-contrast .event-list__empty,
+html.high-contrast .calendar__panel,
+html.high-contrast .calendar__nav-button,
+html.high-contrast .calendar__picker,
+html.high-contrast .calendar__picker-nav,
+html.high-contrast .calendar__empty,
+html.high-contrast .calendar__event,
+html.high-contrast .confirm-dialog__message {
+  border-color: #6b7280 !important;
+}
+
+html.high-contrast .site-search__input:is(:hover, :focus-visible),
+html.high-contrast .settings-button:is(:hover, :focus-visible),
+html.high-contrast .site-nav__dropdown:is(:hover, :focus-visible),
+html.high-contrast .home-card-programs__go:is(:hover, :focus-visible),
+html.high-contrast .settings-panel__choice:is(:hover, :focus-visible),
+html.high-contrast .settings-panel__choice-large:is(:hover, :focus-visible),
+html.high-contrast .settings-panel__footer:is(:hover, :focus-visible),
+html.high-contrast .section-heading:is(:hover, :focus-visible),
+html.high-contrast .campus-map:is(:hover, :focus-visible),
+html.high-contrast .campus-map__image:is(:hover, :focus-visible),
+html.high-contrast .school-address:is(:hover, :focus-visible),
+html.high-contrast .download-card:is(:hover, :focus-visible),
+html.high-contrast .faculty-card:is(:hover, :focus-visible),
+html.high-contrast .service-card:is(:hover, :focus-visible),
+html.high-contrast .portal-actions:is(:hover, :focus-visible),
+html.high-contrast .search-results:is(:hover, :focus-visible),
+html.high-contrast .event-filter__select:is(:hover, :focus-visible),
+html.high-contrast .event-card:is(:hover, :focus-visible),
+html.high-contrast .event-card__footer:is(:hover, :focus-visible),
+html.high-contrast .event-list__empty:is(:hover, :focus-visible),
+html.high-contrast .calendar__panel:is(:hover, :focus-visible),
+html.high-contrast .calendar__nav-button:is(:hover, :focus-visible),
+html.high-contrast .calendar__picker:is(:hover, :focus-visible),
+html.high-contrast .calendar__picker-nav:is(:hover, :focus-visible),
+html.high-contrast .calendar__empty:is(:hover, :focus-visible),
+html.high-contrast .calendar__event:is(:hover, :focus-visible),
+html.high-contrast .confirm-dialog__message:is(:hover, :focus-visible),
+html.high-contrast .home-card-programs__item:is(:hover, :focus-visible) .home-card-programs__go {
+  border-color: #0a5c34 !important;
+}
+
+html.high-contrast .site-search__input:hover,
+html.high-contrast .settings-button:hover,
+html.high-contrast .home-card-programs__go:hover,
+html.high-contrast .settings-panel__choice:hover,
+html.high-contrast .settings-panel__choice-large:hover,
+html.high-contrast .campus-map:hover,
+html.high-contrast .campus-map__image:hover,
+html.high-contrast .school-address:hover,
+html.high-contrast .download-card:hover,
+html.high-contrast .faculty-card:hover,
+html.high-contrast .service-card:hover,
+html.high-contrast .search-results:hover,
+html.high-contrast .event-filter__select:hover,
+html.high-contrast .event-card:hover,
+html.high-contrast .event-list__empty:hover,
+html.high-contrast .calendar__panel:hover,
+html.high-contrast .calendar__nav-button:hover,
+html.high-contrast .calendar__picker:hover,
+html.high-contrast .calendar__picker-nav:hover,
+html.high-contrast .calendar__empty:hover,
+html.high-contrast .calendar__event:hover,
+html.high-contrast .confirm-dialog__message:hover {
+  outline: 1px solid #0a5c34;
+  outline-offset: -1px;
+}
+
+/* ===== program-section: photo spans Overview + Highlights (desktop) ===== */
+
+@media (min-width: 64rem) {
+  .program-section {
+    display: grid;
+    grid-template-columns: 1fr 13rem;
+    column-gap: 2rem;
+    row-gap: 2.5rem;
+    align-items: start;
+  }
+  .program-section > * { margin: 0 !important; grid-column: 1 / -1; }
+  .program-overview { display: contents; }
+  .program-overview > div { grid-column: 1; grid-row: 1; }
+  .program-overview > .program-photo { grid-column: 2; grid-row: 1 / span 2; }
+  .program-section > section:nth-of-type(2) { grid-column: 1; grid-row: 2; }
+  .program-section > section:nth-of-type(3) { grid-row: 3; }
+}
